@@ -13,7 +13,7 @@ const contactLimiter = rateLimit({
   message: { status: 'error', message: 'Przekroczono limit zapytań. Spróbuj ponownie później.' },
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: 'loopback'
+  trustProxy: 'loopback',
 });
 
 router.post('/', contactLimiter, validateRequest(contactSchema), handleContact);

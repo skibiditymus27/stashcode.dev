@@ -19,12 +19,16 @@ const envSchema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
   MAIL_FROM: z.string().optional(),
-  MAIL_TO: z.string().optional()
+  MAIL_TO: z.string().optional(),
 });
 
 const env = envSchema.parse(process.env);
 
-const parseList = (value = '') => value.split(',').map(item => item.trim()).filter(Boolean);
+const parseList = (value = '') =>
+  value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
 
 const config = {
   env: env.NODE_ENV,
@@ -38,7 +42,7 @@ const config = {
     database: env.PGDATABASE,
     user: env.PGUSER,
     password: env.PGPASSWORD,
-    ssl: env.PGSSL === 'true'
+    ssl: env.PGSSL === 'true',
   },
   mail: {
     host: env.SMTP_HOST,
@@ -47,8 +51,8 @@ const config = {
     user: env.SMTP_USER,
     password: env.SMTP_PASSWORD,
     from: env.MAIL_FROM,
-    to: env.MAIL_TO
-  }
+    to: env.MAIL_TO,
+  },
 };
 
 module.exports = config;

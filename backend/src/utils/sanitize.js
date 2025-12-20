@@ -8,5 +8,5 @@ function escapeHtml(value = '') {
 }
 
 module.exports = {
-  escapeHtml
+  escapeHtml,
 };

@@ -13,7 +13,7 @@ const app = express();
 app.set('trust proxy', 'loopback');
 
 app.use(requestIdMiddleware);
-securityMiddleware.forEach(mw => app.use(mw));
+securityMiddleware.forEach((mw) => app.use(mw));
 app.use(express.json({ limit: '256kb' }));
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));

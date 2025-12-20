@@ -19,7 +19,7 @@ const corsMiddleware = cors({
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: false,
-  maxAge: 600
+  maxAge: 600,
 });
 
 const rateLimiter = rateLimit({
@@ -27,21 +27,21 @@ const rateLimiter = rateLimit({
   max: config.rateLimitMax,
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: 'loopback'
+  trustProxy: 'loopback',
 });
 
 const securityMiddleware = [
   helmet({
     contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false
+    crossOriginEmbedderPolicy: false,
   }),
   hpp(),
   corsMiddleware,
-  rateLimiter
+  rateLimiter,
 ];
 
 module.exports = {
   securityMiddleware,
   corsMiddleware,
-  rateLimiter
+  rateLimiter,
 };

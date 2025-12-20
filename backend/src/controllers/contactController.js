@@ -6,24 +6,25 @@ async function handleContact(req, res, next) {
     const data = req.validatedBody;
     const meta = {
       ipAddress: req.ip,
-      userAgent: req.get('user-agent')
+      userAgent: req.get('user-agent'),
     };
 
     const stored = await saveContactRequest(data, meta);
 
-    sendNotification(data)
-      .catch(error => logger.error('Failed to send notification email', {
+    sendNotification(data).catch((error) =>
+      logger.error('Failed to send notification email', {
         error: error.message,
         requestId: stored.id,
-        email: data.email
-      }));
+        email: data.email,
+      })
+    );
 
     return res.status(201).json({
       status: 'ok',
       data: {
         id: stored.id,
-        createdAt: stored.created_at
-      }
+        createdAt: stored.created_at,
+      },
     });
   } catch (error) {
     return next(error);
@@ -31,5 +32,5 @@ async function handleContact(req, res, next) {
 }
 
 module.exports = {
-  handleContact
+  handleContact,
 };

@@ -9,7 +9,7 @@ function errorHandler(err, req, res, next) {
     status: err.status || 500,
     error: err.message,
     stack: err.stack,
-    requestId
+    requestId,
   });
 
   if (res.headersSent) {
@@ -19,7 +19,7 @@ function errorHandler(err, req, res, next) {
   const status = err.status || (err.message === 'Not allowed by CORS' ? 403 : 500);
   const response = {
     status: 'error',
-    message: status === 500 ? 'Internal server error' : err.message
+    message: status === 500 ? 'Internal server error' : err.message,
   };
 
   return res.status(status).json(response);

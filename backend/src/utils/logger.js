@@ -5,14 +5,14 @@ const format = (level, message, meta) => {
     level,
     message,
     timestamp: new Date().toISOString(),
-    ...meta
+    ...meta,
   };
   return JSON.stringify(payload);
 };
 
 const logger = {};
 
-levels.forEach(level => {
+levels.forEach((level) => {
   logger[level] = (message, meta = {}) => {
     const output = format(level, message, meta);
     /* eslint-disable no-console */

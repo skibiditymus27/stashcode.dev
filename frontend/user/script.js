@@ -9,21 +9,26 @@ function initPage() {
 
   const observedSections = document.querySelectorAll('[data-observe]');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const raf = window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : (cb) => setTimeout(cb, 16);
+  const raf = window.requestAnimationFrame
+    ? window.requestAnimationFrame.bind(window)
+    : (cb) => setTimeout(cb, 16);
 
   if (!prefersReducedMotion && 'IntersectionObserver' in window) {
-    const sectionObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.18 });
+    const sectionObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.18 }
+    );
 
-    observedSections.forEach(section => sectionObserver.observe(section));
+    observedSections.forEach((section) => sectionObserver.observe(section));
   } else {
-    observedSections.forEach(section => section.classList.add('reveal'));
+    observedSections.forEach((section) => section.classList.add('reveal'));
   }
 
   const form = document.getElementById('contact-form');
@@ -31,7 +36,8 @@ function initPage() {
   const closeBtn = document.getElementById('closeModal');
   const formFeedback = document.getElementById('formFeedback');
   const phoneInput = document.getElementById('phone');
-  const focusableSelectors = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+  const focusableSelectors =
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
   let lastFocusedElement = null;
   let focusableModalElements = [];
 
@@ -115,7 +121,7 @@ function initPage() {
   }
 
   if (form) {
-    form.addEventListener('submit', event => {
+    form.addEventListener('submit', (event) => {
       event.preventDefault();
       resetFeedback();
 
@@ -155,11 +161,11 @@ function initPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify(formData),
       })
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw new Error('Błąd podczas wysyłania formularza.');
           }
@@ -170,9 +176,12 @@ function initPage() {
           form.reset();
           showModal();
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
-          setFeedback('Wystąpił problem z przesłaniem formularza. Spróbuj ponownie później.', 'error');
+          setFeedback(
+            'Wystąpił problem z przesłaniem formularza. Spróbuj ponownie później.',
+            'error'
+          );
         });
     });
   }
@@ -182,7 +191,7 @@ function initPage() {
       hideModal();
     });
 
-    modal.addEventListener('click', event => {
+    modal.addEventListener('click', (event) => {
       if (event.target === modal) {
         hideModal();
       }
@@ -190,12 +199,14 @@ function initPage() {
   }
 
   // Custom smooth scroll for navigation links (header and footer)
-  const smoothScrollLinks = document.querySelectorAll('header nav a[href^="#"], footer nav a[href^="#"], footer nav a[href*="#"]');
-  
-  smoothScrollLinks.forEach(anchor => {
+  const smoothScrollLinks = document.querySelectorAll(
+    'header nav a[href^="#"], footer nav a[href^="#"], footer nav a[href*="#"]'
+  );
+
+  smoothScrollLinks.forEach((anchor) => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
-      
+
       // Handle links like "index.html#services" on the same page
       let targetId;
       if (href.startsWith('#')) {
@@ -204,8 +215,8 @@ function initPage() {
         // Check if we're on the same page
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         const linkPage = href.split('#')[0] || 'index.html';
-        
-        if (currentPage === linkPage || linkPage === 'index.html' && currentPage === '') {
+
+        if (currentPage === linkPage || (linkPage === 'index.html' && currentPage === '')) {
           targetId = '#' + href.split('#')[1];
         } else {
           // Different page - let browser handle navigation
@@ -214,10 +225,10 @@ function initPage() {
       } else {
         return;
       }
-      
+
       const targetElement = document.querySelector(targetId);
       if (!targetElement) return;
-      
+
       e.preventDefault();
 
       const header = document.querySelector('header');
@@ -240,9 +251,9 @@ function initPage() {
       // Ease-in-out quadratic function
       function ease(t, b, c, d) {
         t /= d / 2;
-        if (t < 1) return c / 2 * t * t + b;
+        if (t < 1) return (c / 2) * t * t + b;
         t--;
-        return -c / 2 * (t * (t - 2) - 1) + b;
+        return (-c / 2) * (t * (t - 2) - 1) + b;
       }
 
       requestAnimationFrame(animation);
@@ -251,7 +262,7 @@ function initPage() {
 
   return {
     showModal,
-    hideModal
+    hideModal,
   };
 }
 
@@ -272,7 +283,7 @@ function initCookieConsent() {
 
   // Sprawdź czy użytkownik już dokonał wyboru
   const consent = localStorage.getItem('cookieConsent');
-  
+
   if (consent === null) {
     // Brak wyboru - pokaż baner z animacją
     cookieBanner.classList.remove('hidden');
@@ -347,11 +358,11 @@ if (typeof window !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { 
-    isPhoneValid, 
-    initPage, 
-    initCookieConsent, 
-    getCookieConsent, 
-    resetCookieConsent 
+  module.exports = {
+    isPhoneValid,
+    initPage,
+    initCookieConsent,
+    getCookieConsent,
+    resetCookieConsent,
   };
 }

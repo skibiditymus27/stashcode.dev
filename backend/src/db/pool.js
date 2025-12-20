@@ -10,7 +10,7 @@ const pool = new Pool({
   password: config.database.password,
   ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
   max: 10,
-  idleTimeoutMillis: 30_000
+  idleTimeoutMillis: 30_000,
 });
 
 pool.on('error', (err) => {

@@ -34,8 +34,8 @@ async function sendNotification(payload) {
     secure: Boolean(secure),
     auth: {
       user,
-      pass: password
-    }
+      pass: password,
+    },
   });
 
   const mailOptions = {
@@ -59,7 +59,7 @@ Wiadomość: ${payload.message}
       </ul>
       <p><strong>Wiadomość:</strong></p>
       <p>${escapeHtml(payload.message).replace(/\n/g, '<br>')}</p>
-    `
+    `,
   };
 
   await transporter.sendMail(mailOptions);
@@ -68,5 +68,5 @@ Wiadomość: ${payload.message}
 
 module.exports = {
   saveContactRequest,
-  sendNotification
+  sendNotification,
 };

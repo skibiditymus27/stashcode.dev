@@ -33,7 +33,9 @@ function authMiddleware(req, res, next) {
     req.admin = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ status: 'error', message: 'Token wygasł lub jest nieprawidłowy' });
+    return res
+      .status(401)
+      .json({ status: 'error', message: 'Token wygasł lub jest nieprawidłowy' });
   }
 }
 
@@ -79,9 +81,9 @@ router.get('/requests', authMiddleware, async (req, res, next) => {
       stats: {
         total: parseInt(stats.total, 10),
         today: parseInt(stats.today, 10),
-        week: parseInt(stats.week, 10)
+        week: parseInt(stats.week, 10),
       },
-      requests: requestsResult.rows
+      requests: requestsResult.rows,
     });
   } catch (error) {
     logger.error('Failed to fetch admin requests', { error: error.message });
@@ -98,20 +100,28 @@ router.get('/requests/export', authMiddleware, async (req, res, next) => {
       ORDER BY created_at DESC
     `);
 
-    const headers = ['Data', 'Imię i nazwisko', 'E-mail', 'Telefon', 'Miejscowość', 'Wiadomość', 'IP'];
-    const rows = result.rows.map(r => [
+    const headers = [
+      'Data',
+      'Imię i nazwisko',
+      'E-mail',
+      'Telefon',
+      'Miejscowość',
+      'Wiadomość',
+      'IP',
+    ];
+    const rows = result.rows.map((r) => [
       new Date(r.created_at).toLocaleString('pl-PL'),
       r.full_name,
       r.email,
       r.phone,
       r.city,
       r.message.replace(/"/g, '""').replace(/\n/g, ' '),
-      r.ip_address || ''
+      r.ip_address || '',
     ]);
 
     const csv = [
       headers.join(';'),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(';'))
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(';')),
     ].join('\n');
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
@@ -128,10 +138,7 @@ router.get('/requests/export', authMiddleware, async (req, res, next) => {
 router.get('/requests/:id', authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
-      'SELECT * FROM contact_requests WHERE id = $1',
-      [id]
-    );
+    const result = await pool.query('SELECT * FROM contact_requests WHERE id = $1', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ status: 'error', message: 'Nie znaleziono' });
@@ -147,10 +154,9 @@ router.get('/requests/:id', authMiddleware, async (req, res, next) => {
 router.delete('/requests/:id', authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
-      'DELETE FROM contact_requests WHERE id = $1 RETURNING id',
-      [id]
-    );
+    const result = await pool.query('DELETE FROM contact_requests WHERE id = $1 RETURNING id', [
+      id,
+    ]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ status: 'error', message: 'Nie znaleziono' });
