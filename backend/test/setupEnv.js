@@ -6,5 +6,5 @@ process.env.PGDATABASE = process.env.PGDATABASE || 'gpsinstal_test';
 process.env.PGUSER = process.env.PGUSER || 'postgres';
 process.env.PGPASSWORD = process.env.PGPASSWORD || 'postgres';
 process.env.ALLOW_ORIGINS = 'http://localhost';
-process.env.RATE_LIMIT_WINDOW_MINUTES = '1';
-process.env.RATE_LIMIT_MAX = '10';
+process.env.RATE_LIMIT_WINDOW_MINUTES = '5';
+process.env.RATE_LIMIT_MAX = '100';

@@ -4,6 +4,7 @@ const config = require('./config');
 const { securityMiddleware, corsMiddleware } = require('./middleware/security');
 const errorHandler = require('./middleware/errorHandler');
 const { requestIdMiddleware } = require('./middleware/requestId');
+const timeout = require('./middleware/timeout');
 const contactRouter = require('./routes/contact');
 const healthRouter = require('./routes/health');
 const adminRouter = require('./routes/admin');
@@ -13,6 +14,7 @@ const app = express();
 app.set('trust proxy', 'loopback');
 
 app.use(requestIdMiddleware);
+app.use(timeout(10000)); // 10 seconds timeout
 securityMiddleware.forEach((mw) => app.use(mw));
 app.use(express.json({ limit: '256kb' }));
 app.use(express.urlencoded({ extended: false }));

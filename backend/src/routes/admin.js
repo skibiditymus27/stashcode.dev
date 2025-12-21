@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
 const pool = require('../db/pool');
 const config = require('../config');
 const logger = require('../utils/logger');
@@ -9,7 +10,11 @@ const router = express.Router();
 
 // Simple admin credentials (in production, store hashed in DB)
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';
-const ADMIN_PASS = process.env.ADMIN_PASS || 'gpsinstal2025';
+const ADMIN_PASS_HASH =
+  process.env.ADMIN_PASS_HASH ||
+  '100000:static_salt_for_demo:abf516476f6004efbd8615801502afffe0efa25e20220591b8b64c0905ade39779895aac18576f0a2cef08b6929b946a24c81e2e1e487cacb87d2d562ededac2';
+
+
 
 // Use cryptographically secure random bytes for JWT secret fallback
 // WARNING: In production, always set JWT_SECRET environment variable!
@@ -19,6 +24,30 @@ const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(64).toString('he
 if (!process.env.JWT_SECRET) {
   logger.warn('JWT_SECRET not set! Using random secret - tokens will be invalidated on restart.');
 }
+
+if (!process.env.ADMIN_PASS_HASH && process.env.NODE_ENV === 'production') {
+  logger.error('CRITICAL: ADMIN_PASS_HASH not set in production!');
+}
+
+// Specialized rate limiter for login to prevent brute-force
+const loginLimiter = rateLimit({
+  windowMs: process.env.NODE_ENV === 'test' ? 1000 : 15 * 60 * 1000, // 1 second for tests, 15m for prod
+  max: 5, // Limit each IP to 5 login requests per window
+  message: { status: 'error', message: 'Zbyt wiele prób logowania. Spróbuj powoli za 15 minut.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// CSV Injection protection: Escape characters that trigger formulas (=, +, -, @)
+function sanitizeCsvCell(value) {
+  if (typeof value !== 'string') return value;
+  const formulaChars = ['=', '+', '-', '@'];
+  if (formulaChars.some((char) => value.startsWith(char))) {
+    return `'${value}`;
+  }
+  return value;
+}
+
 
 // Auth middleware
 function authMiddleware(req, res, next) {
@@ -40,18 +69,41 @@ function authMiddleware(req, res, next) {
 }
 
 // Login
-router.post('/login', (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body;
 
-  if (username !== ADMIN_USER || password !== ADMIN_PASS) {
-    logger.warn('Failed admin login attempt', { username, ip: req.ip });
-    return res.status(401).json({ status: 'error', message: 'Nieprawidłowe dane logowania' });
+  if (!username || !password) {
+    return res.status(400).json({ status: 'error', message: 'Użytkownik i hasło są wymagane' });
   }
 
-  const token = jwt.sign({ username, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
-  logger.info('Admin logged in', { username, ip: req.ip });
+  const [iterations, salt, hash] = ADMIN_PASS_HASH.split(':');
 
-  res.json({ status: 'ok', token });
+  crypto.pbkdf2(
+    password,
+    salt,
+    parseInt(iterations, 10),
+    64,
+    'sha512',
+    (err, derivedKey) => {
+      if (err) return next(err);
+
+      const isPasswordValid = derivedKey.toString('hex') === hash;
+
+      if (username !== ADMIN_USER || !isPasswordValid) {
+        logger.warn('Failed admin login attempt', { username, ip: req.ip });
+        return res
+          .status(401)
+          .json({ status: 'error', message: 'Nieprawidłowe dane logowania' });
+      }
+
+      const token = jwt.sign({ username, role: 'admin' }, JWT_SECRET, {
+        expiresIn: '8h',
+      });
+      logger.info('Admin logged in', { username, ip: req.ip });
+
+      res.json({ status: 'ok', token });
+    }
+  );
 });
 
 // Get all requests with stats
@@ -111,12 +163,12 @@ router.get('/requests/export', authMiddleware, async (req, res, next) => {
     ];
     const rows = result.rows.map((r) => [
       new Date(r.created_at).toLocaleString('pl-PL'),
-      r.full_name,
-      r.email,
-      r.phone,
-      r.city,
-      r.message.replace(/"/g, '""').replace(/\n/g, ' '),
-      r.ip_address || '',
+      sanitizeCsvCell(r.full_name),
+      sanitizeCsvCell(r.email),
+      sanitizeCsvCell(r.phone),
+      sanitizeCsvCell(r.city),
+      sanitizeCsvCell(r.message.replace(/"/g, '""').replace(/\n/g, ' ')),
+      sanitizeCsvCell(r.ip_address || ''),
     ]);
 
     const csv = [

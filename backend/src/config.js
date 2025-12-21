@@ -5,7 +5,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().default(3000),
   ALLOW_ORIGINS: z.string().optional(),
-  RATE_LIMIT_WINDOW_MINUTES: z.coerce.number().default(15),
+  RATE_LIMIT_WINDOW_MINUTES: z.coerce.number().default(5),
   RATE_LIMIT_MAX: z.coerce.number().default(100),
   PGHOST: z.string().default('postgres'),
   PGPORT: z.coerce.number().default(5432),
