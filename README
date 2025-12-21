@@ -24,11 +24,34 @@ Responsive marketing site for GPS INSTAL backed by a hardened API that accepts c
 - `POST /api/contact` – validates payload, stores the request, and triggers a notification (non-blocking).
 - `GET /api/health` – checks API status and database connectivity for monitoring.
 
+## Code Quality
+We use **ESLint** and **Prettier** to maintain high code quality and consistent formatting across the project.
+
+### Backend scripts
+From the `backend/` directory:
+- `npm run lint` – check source code for potential errors and style violations.
+- `npm run lint:fix` – automatically fix linting issues.
+- `npm run format` – format source code using Prettier.
+
+### Frontend scripts
+From the `frontend/` directory:
+- `npm run lint` – check JavaScript for potential errors.
+- `npm run lint:fix` – automatically fix linting issues.
+- `npm run format` – format HTML, CSS, and JS using Prettier.
+
 ## Local setup
 1. Clone the repository and `cd` into the project.
 2. Copy `backend/.env.example` to `backend/.env`, then populate database credentials, allowed origins, and SMTP settings if you plan to send emails.
-3. Launch the stack:
+3. Install dependencies:
 	```bash
+	# Backend
+	cd backend && npm install
+	# Frontend
+	cd ../frontend && npm install
+	```
+4. Launch the stack:
+	```bash
+	cd ..
 	docker compose up --build
 	```
 	The site becomes available on port 80 (Nginx serves the frontend and proxies `/api` to the backend).
@@ -37,10 +60,11 @@ Responsive marketing site for GPS INSTAL backed by a hardened API that accepts c
 1. Get your LAN IP: `hostname -I` (pick the address in your Wi‑Fi/Ethernet subnet, e.g., `192.168.1.42`).
 2. Backend: from `backend/`, start the API bound to all interfaces: `PORT=3000 npm start`.
 3. CORS: set `ALLOW_ORIGINS=http://<your-lan-ip>:4173` (or the frontend port you pick) in `backend/.env`, then restart the backend.
-4. Frontend: from `frontend/`, run `npm install` (once) then `npm start` to serve static files on port 4173.
+4. Frontend: from `frontend/`, run `npm start` to serve static files on port 4173.
 5. Visit from another device on the same network:
    - Frontend: `http://<your-lan-ip>:4173`
    - API health check: `http://<your-lan-ip>:3000/api/health`
+   - Access admin panel: `http://<your-lan-ip>:4173/admin/` (ensure `ADMIN_SECRET` is set in `.env`)
 Ensure your OS firewall allows these ports.
 
 ## Backend tests
@@ -57,6 +81,6 @@ npm test
 - Integrate with your CRM or helpdesk if you need automatic lead assignment.
 
 ## Tech stack
-- Frontend: HTML5, CSS3, Vanilla JavaScript (ES6+)
-- Backend: Node.js (Express), PostgreSQL, Nodemailer, Jest/Supertest
+- Frontend: HTML5, CSS3, Vanilla JavaScript (ES6+), ESLint, Prettier
+- Backend: Node.js (Express), PostgreSQL, Nodemailer, Jest/Supertest, ESLint, Prettier
 - Infrastructure: Docker, Nginx reverse proxy
