@@ -69,7 +69,7 @@ function authMiddleware(req, res, next) {
 }
 
 // Login
-router.post('/login', loginLimiter, async (req, res) => {
+router.post('/login', loginLimiter, async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
