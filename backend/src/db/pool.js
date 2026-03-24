@@ -8,7 +8,9 @@ const pool = new Pool({
   database: config.database.database,
   user: config.database.user,
   password: config.database.password,
-  ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
+  ssl: config.database.ssl
+    ? { rejectUnauthorized: config.env === 'production' }
+    : false,
   max: 10,
   idleTimeoutMillis: 30_000,
 });

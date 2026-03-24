@@ -11,7 +11,7 @@ const adminRouter = require('./routes/admin');
 
 const app = express();
 
-app.set('trust proxy', 'loopback');
+app.set('trust proxy', config.trustProxy);
 
 app.use(requestIdMiddleware);
 app.use(timeout(10000)); // 10 seconds timeout

@@ -41,16 +41,16 @@ async function sendNotification(payload) {
   const mailOptions = {
     from,
     to,
-    subject: 'Nowe zapytanie z formularza GPS INSTAL',
+    subject: 'Nowe zapytanie z formularza StashCODE',
     text: `Nowe zapytanie:
-Imię i nazwisko: ${payload.name}
-E-mail: ${payload.email}
-Telefon: ${payload.phone}
-Miejscowość: ${payload.city}
-Wiadomość: ${payload.message}
+Imię i nazwisko: ${escapeHtml(payload.name)}
+E-mail: ${escapeHtml(payload.email)}
+Telefon: ${escapeHtml(payload.phone)}
+Miejscowość: ${escapeHtml(payload.city)}
+Wiadomość: ${escapeHtml(payload.message)}
 `,
     html: `
-      <h2>Nowe zapytanie ze strony GPS INSTAL</h2>
+      <h2>Nowe zapytanie ze strony StashCODE</h2>
       <ul>
         <li><strong>Imię i nazwisko:</strong> ${escapeHtml(payload.name)}</li>
         <li><strong>E-mail:</strong> ${escapeHtml(payload.email)}</li>

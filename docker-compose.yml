@@ -4,9 +4,9 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: ${PGDATABASE:-gpsinstal}
-      POSTGRES_USER: ${PGUSER:-gpsinstal}
-      POSTGRES_PASSWORD: ${PGPASSWORD:-gpsinstal}
+      POSTGRES_DB: ${PGDATABASE:-stashcode}
+      POSTGRES_USER: ${PGUSER:-stashcode}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-stashcode}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - './backend/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro,z'

@@ -14,7 +14,7 @@ async function start() {
   }
 
   if (!config.allowOrigins.length) {
-    logger.warn('CORS allow list is empty – all origins are currently allowed');
+    logger.warn('CORS allow list is empty – all cross-origin requests will be rejected');
   }
 
   const server = app.listen(config.port, () => {

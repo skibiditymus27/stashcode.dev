@@ -10,13 +10,17 @@ const corsMiddleware = cors({
       return callback(null, true);
     }
 
-    if (!config.allowOrigins.length || config.allowOrigins.includes(origin)) {
+    if (config.allowOrigins.length === 0) {
+      return callback(new Error('CORS not configured'));
+    }
+
+    if (config.allowOrigins.includes(origin)) {
       return callback(null, true);
     }
 
     return callback(new Error('Not allowed by CORS'));
   },
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: false,
   maxAge: 600,
@@ -32,7 +36,18 @@ const rateLimiter = rateLimit({
 
 const securityMiddleware = [
   helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+      },
+    },
     crossOriginEmbedderPolicy: false,
   }),
   hpp(),

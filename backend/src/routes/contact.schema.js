@@ -1,6 +1,6 @@
 const { z } = require('zod');
 
-const phoneRegex = /^[+]?\d[\d\s-]{6,}$/;
+const phoneRegex = /^[+]?\d[\d\s-]{7,18}$/;
 
 const contactSchema = z
   .object({
