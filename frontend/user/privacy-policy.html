@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — StashCODE</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="wrap nav-inner">
+      <a href="index.html" class="nav-brand">
+        <img src="StashCODE.png" alt="StashCODE" class="nav-logo">
+        <span>Stash<strong>CODE</strong></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="wrap privacy-content">
+    <section>
+      <h2>Privacy Policy</h2>
+      <p><strong>Last updated:</strong> March 2026</p>
+
+      <h2>1. Introduction</h2>
+      <p>StashCODE is a local-first, open-source Rust IDE. We believe your code is yours. This policy explains the minimal data practices behind the project and its website.</p>
+
+      <h2>2. What We Collect</h2>
+      <p>The StashCODE IDE itself collects <strong>no telemetry, analytics, or usage data</strong> by default. Your source code, workspace configuration, terminal sessions, and plugin state remain entirely on your local machine.</p>
+      <p>When you visit this website, standard server logs (IP address, browser user-agent, timestamps) may be recorded by the hosting infrastructure for security and uptime monitoring. No cookies or third-party trackers are used.</p>
+
+      <h2>3. Plugin Sandboxing</h2>
+      <p>Third-party WASM plugins run inside a capability-based sandbox. A plugin cannot access your filesystem, network, or clipboard unless you explicitly grant that permission at install time. Permission grants can be revoked at any point.</p>
+
+      <h2>4. External Services</h2>
+      <p>Certain optional features connect to external servers:</p>
+      <ul style="color:var(--gray-300);margin:0 0 16px 20px;line-height:1.8;">
+        <li><strong>LSP servers</strong> &mdash; language intelligence runs locally by default (e.g., rust-analyzer). If you configure a remote LSP, data is governed by that server&rsquo;s privacy policy.</li>
+        <li><strong>Git remotes</strong> &mdash; push/pull operations contact your configured remote (GitHub, GitLab, etc.).</li>
+        <li><strong>Plugin registry</strong> (planned for v1) &mdash; browsing the marketplace will send search queries to our registry API. No account is required.</li>
+      </ul>
+
+      <h2>5. Data Retention</h2>
+      <p>Server access logs are retained for a maximum of 30 days and are not shared with third parties. We do not sell, rent, or trade any data.</p>
+
+      <h2>6. Your Rights</h2>
+      <p>Because we store virtually no personal data, there is usually nothing to delete. If you believe we hold data about you and want it removed, open an issue on our GitHub repository and we will respond within 14 days.</p>
+
+      <h2>7. Changes</h2>
+      <p>This policy may be updated as the project evolves (e.g., when the plugin marketplace launches in v1). Material changes will be announced in the IDE release notes and on this page.</p>
+
+      <h2>8. Contact</h2>
+      <p>Questions? Open an issue at <a href="https://github.com/skibiditymus27/stashcode.dev" target="_blank" rel="noopener">github.com/skibiditymus27/stashcode.dev</a>.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <img src="StashCODE.png" alt="StashCODE" class="footer-logo">
+        <span>Stash<strong>CODE</strong></span>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="https://github.com/skibiditymus27/stashcode.dev" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 StashCODE &mdash; Open source, built with Rust.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
